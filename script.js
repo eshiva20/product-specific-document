@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Data for divisions
-
   const ProductsData = [
     {
       name: "Healthbiotech",
@@ -199,11 +198,47 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   ];
 
+  function addScrollListeners() {
+    // Example implementation
+    window.addEventListener("scroll", function () {
+      console.log("Window scrolled");
+    });
+  }
+
   const Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const selectedProducts = new Set();
 
-  // Get the allDivisions container
+  // Get the allDivisions container and productSelected container
   const allDivisions = document.querySelector(".allDivisions");
+  const productSelectedDiv = document.querySelector(".productSelected");
+  const docDiv = document.querySelector(".docList");
+  ["COPP", "FSC", "COA", "MSDS", "Dosier", "CTD", "ACTD"].forEach((item) => {
+    const singleDoc = document.createElement("div");
+    singleDoc.classList.add("singleDoc");
+
+    const checkboxInput = document.createElement("input");
+    checkboxInput.type = "checkbox";
+    checkboxInput.name = item;
+    checkboxInput.id = item;
+    checkboxInput.value = item;
+
+    const docName = document.createElement("span");
+    docName.textContent = item;
+
+    singleDoc.appendChild(checkboxInput);
+    singleDoc.appendChild(docName);
+
+    docDiv.appendChild(singleDoc);
+  });
+
+  // Function to update the visibility of the productSelected div
+  const updateProductSelectedVisibility = () => {
+    if (selectedProducts.size > 0) {
+      productSelectedDiv.classList.add("showProductSelected");
+    } else {
+      productSelectedDiv.classList.remove("showProductSelected");
+    }
+  };
 
   // Handle product click event
   const handleProductClick = (e, productId) => {
@@ -212,35 +247,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (radio) {
       radio.checked = true;
     }
-    selectedProducts.clear();
-    selectedProducts.add(productId);
-  };
 
-  // Handle scroll to specific letter
-  const handleScrollTo = (letter, photosDiv) => {
-    const target = photosDiv.querySelector(`[data-letter="${letter}"]`);
-    if (target) {
-      photosDiv.scrollTo({
-        top: target.offsetTop - photosDiv.offsetTop,
-        behavior: "smooth",
-      });
+    // Check if the product is already selected
+    if (selectedProducts.has(productId)) {
+      selectedProducts.delete(productId);
+    } else {
+      selectedProducts.clear(); // Clear previous selections
+      selectedProducts.add(productId);
     }
+
+    updateProductSelectedVisibility(); // Update visibility based on selection
   };
 
-  // Attach event listeners for scrolling
-  const addScrollListeners = (photosDiv) => {
-    const letters = photosDiv
-      .closest(".productsDiv")
-      .querySelectorAll(".filter .letter");
-    letters.forEach((letter) => {
-      letter.addEventListener("click", function (e) {
-        e.stopPropagation();
-        handleScrollTo(letter.textContent, photosDiv);
-      });
-    });
-  };
-
-  // Map over the data and create the singleDivision elements
+  // The rest of your JavaScript remains unchanged, just ensure it handles product clicks properly
   ProductsData.forEach((item, divisionIndex) => {
     const singleProduct = document.createElement("div");
     singleProduct.classList.add("singleDivision");
@@ -383,3 +402,5 @@ document.addEventListener("DOMContentLoaded", function () {
     allDivisions.appendChild(singleProduct);
   });
 });
+
+//-----------------------------------------------------------------------------------
