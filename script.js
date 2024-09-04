@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Data for divisions
   const ProductsData = [
     {
       name: "Healthbiotech",
@@ -208,10 +207,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const selectedProducts = new Set();
 
-  // Get the allDivisions container and productSelected container
   const allDivisions = document.querySelector(".allDivisions");
   const productSelectedDiv = document.querySelector(".productSelected");
+  const cross_icon = document.querySelector(".cross_icon");
   const docDiv = document.querySelector(".docList");
+
   ["COPP", "FSC", "COA", "MSDS", "Dosier", "CTD", "ACTD"].forEach((item) => {
     const singleDoc = document.createElement("div");
     singleDoc.classList.add("singleDoc");
@@ -231,17 +231,13 @@ document.addEventListener("DOMContentLoaded", function () {
     docDiv.appendChild(singleDoc);
   });
 
-  // Function to update the visibility of the productSelected div
   const updateProductSelectedVisibility = () => {
     if (selectedProducts.size > 0) {
       productSelectedDiv.classList.add("showProductSelected");
-    } else {
-      productSelectedDiv.classList.remove("showProductSelected");
     }
   };
 
-  // Handle product click event
-  const handleProductClick = (e, productId) => {
+  const handleProductClick = (e, productId, productName) => {
     e.stopPropagation();
     const radio = e.currentTarget.querySelector('input[type="radio"]');
     if (radio) {
@@ -257,9 +253,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     updateProductSelectedVisibility(); // Update visibility based on selection
+    const product_name = document.querySelector(".product_name");
+    product_name.textContent = productName;
+
+    // Log the selected product name
+    // console.log("Selected product:", productName);
   };
 
-  // The rest of your JavaScript remains unchanged, just ensure it handles product clicks properly
   ProductsData.forEach((item, divisionIndex) => {
     const singleProduct = document.createElement("div");
     singleProduct.classList.add("singleDivision");
@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
         productDiv.appendChild(productNameSpan);
 
         productDiv.addEventListener("click", (e) =>
-          handleProductClick(e, product.id)
+          handleProductClick(e, product.id, product.ProductName)
         );
 
         productsImgDiv.appendChild(productDiv);
@@ -396,10 +396,29 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         productsImagesDiv.style.display = "none";
         arrowIcon.classList.remove("rotate");
+
+        productSelectedDiv.classList.remove("showProductSelected");
+
+        const selectedRadioButton = document.querySelector(
+          '.singleProduct input[type="radio"]:checked'
+        );
+        if (selectedRadioButton) {
+          selectedRadioButton.checked = false;
+        }
       }
     });
 
     allDivisions.appendChild(singleProduct);
+  });
+
+  cross_icon.addEventListener("click", (e) => {
+    const selectedRadioButton = document.querySelector(
+      '.singleProduct input[type="radio"]:checked'
+    );
+    if (selectedRadioButton) {
+      selectedRadioButton.checked = false; // Uncheck the radio button
+      productSelectedDiv.classList.remove("showProductSelected");
+    }
   });
 });
 
