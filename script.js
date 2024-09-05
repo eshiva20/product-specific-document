@@ -196,7 +196,6 @@ document.addEventListener("DOMContentLoaded", function () {
       ],
     },
   ];
-
   function addScrollListeners() {
     // Example implementation
     window.addEventListener("scroll", function () {
@@ -211,6 +210,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const productSelectedDiv = document.querySelector(".productSelected");
   const cross_icon = document.querySelector(".cross_icon");
   const docDiv = document.querySelector(".docList");
+  const imgParaDiv = document.querySelector(".imgPara");
+
+  imgParaDiv.addEventListener("click", function (e) {
+    const checkbox = imgParaDiv.querySelector("input[type='checkbox']");
+
+    // Prevent the default checkbox behavior if directly clicked
+    if (e.target !== checkbox) {
+      checkbox.checked = !checkbox.checked; // Toggle the checkbox state
+    }
+
+    if (checkbox.checked) {
+      imgParaDiv.classList.add("imgPara_selected");
+    } else {
+      imgParaDiv.classList.remove("imgPara_selected");
+    }
+  });
 
   ["COPP", "FSC", "COA", "MSDS", "Dosier", "CTD", "ACTD"].forEach((item) => {
     const singleDoc = document.createElement("div");
@@ -227,6 +242,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     singleDoc.appendChild(checkboxInput);
     singleDoc.appendChild(docName);
+
+    singleDoc.addEventListener("click", function (e) {
+      if (e.target !== checkboxInput) {
+        checkboxInput.checked = !checkboxInput.checked; // Toggle checkbox
+      }
+
+      if (checkboxInput.checked) {
+        singleDoc.classList.add("singleDoc_selected");
+      } else {
+        singleDoc.classList.remove("singleDoc_selected");
+      }
+    });
 
     docDiv.appendChild(singleDoc);
   });
@@ -415,10 +442,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectedRadioButton = document.querySelector(
       '.singleProduct input[type="radio"]:checked'
     );
+
     if (selectedRadioButton) {
       selectedRadioButton.checked = false; // Uncheck the radio button
       productSelectedDiv.classList.remove("showProductSelected");
     }
+
+    // Uncheck all checkboxes inside .singleDoc elements
+    const allCheckboxes = document.querySelectorAll(
+      ".singleDoc input[type='checkbox']"
+    );
+    const imgCheckbox = document.querySelector(
+      ".imgPara input[type='checkbox']"
+    );
+    imgCheckbox.checked = false;
+    allCheckboxes.forEach((checkbox) => {
+      checkbox.checked = false;
+    });
   });
 });
 
